@@ -1,0 +1,72 @@
+
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+      apache:
+        image: php:7.4-apache
+        ports:
+          - 80:80
+        options: >-
+          --health-cmd="curl -f http://localhost/ || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+        extensions: pdo_mysql
+
+    - name: Start Apache
+      run: |
+        docker-compose up -d apache
+
+    - name: Wait for MySQL
+      run: |
+        while ! mysqladmin ping --host=127.0.0.1 --port=3306 --user=root --password=root --silent; do
+          echo "Waiting for database connection..."
+          sleep 1
+        done
+
+    - name: Run PHP script
+      run: |
+        php -r "
+        try {
+            \$pdo = new PDO('mysql:host=127.0.0.1;dbname=test_db', 'root', 'root');
+            \$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            echo 'Connected to MySQL successfully!';
+        } catch (PDOException \$e) {
+            echo 'Connection failed: ' . \$e->getMessage();
+        }
+        "
+
