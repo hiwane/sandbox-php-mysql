@@ -27,16 +27,6 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
-      apache:
-        image: php:7.4-apache
-        ports:
-          - 80:80
-        options: >-
-          --health-cmd="curl -f http://localhost/ || exit 1"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -49,7 +39,7 @@ jobs:
 
     - name: Start Apache
       run: |
-        docker-compose up -d apache
+        docker run -d --name apache -p 80:80 -v ${{ github.workspace }}:/var/www/html php:7.4-apache
 
     - name: Wait for MySQL
       run: |
@@ -58,15 +48,13 @@ jobs:
           sleep 1
         done
 
-    - name: Run PHP script
+    - name: Wait for Apache
       run: |
-        php -r "
-        try {
-            \$pdo = new PDO('mysql:host=127.0.0.1;dbname=test_db', 'root', 'root');
-            \$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo 'Connected to MySQL successfully!';
-        } catch (PDOException \$e) {
-            echo 'Connection failed: ' . \$e->getMessage();
-        }
-        "
+        until curl -s http://localhost; do
+          echo "Waiting for Apache server..."
+          sleep 5
+        done
 
+    - name: Curl index.php
+      run: |
+        curl http://localhost/index.php
