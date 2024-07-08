@@ -21,7 +21,7 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
@@ -36,11 +36,11 @@ jobs:
 
     - name: Start Apache
       run: |
-        docker run -d --name apache -p 80:80 -v ${{ github.workspace }}:/var/www/html my-php-apache
+        docker run -d --name apache -p 80:80 --network host -v ${{ github.workspace }}:/var/www/html my-php-apache
 
     - name: Wait for MySQL
       run: |
-        while ! mysqladmin ping --host=127.0.0.1 --port=3306 --user=root --password=root --silent; do
+        until mysqladmin ping --host=127.0.0.1 --port=3306 --user=root --password=root --silent; do
           echo "Waiting for database connection..."
           sleep 1
         done
