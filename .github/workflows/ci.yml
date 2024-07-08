@@ -32,7 +32,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t my-php-apache .
+        docker build -t my-php-apache ./tests
 
     - name: Start Apache
       run: |
