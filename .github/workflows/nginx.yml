@@ -57,8 +57,16 @@ jobs:
         ls -la /etc/
         echo "@@@ /etc/php"
         ls -la /etc/php
+        echo "@@@ /etc/php/8.1"
+        ls -la /etc/php/8.1
         echo "@@@ /etc/php-fpm"
         ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
+    - name: echo docker env
+      run: |
+        docker exec my-nginx ls -la /etc || echo "no /etc"
+        docker exec my-nginx ls -la /etc/php || echo "no /etc/php"
+        docker exec my-nginx ls -la /etc/php/8.1 || echo "no /etc/php/8.1"
+        docker exec my-nginx ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
 
     - name: List running containers
       run: docker ps -a
@@ -86,7 +94,7 @@ jobs:
     - name: Check PHP-FPM socket
       run: |
         # docker exec my-nginx find / -type s
-        ls -l /run/php/php8.2-fpm.sock || echo "No socket found"
+        docker exec my-nginx bash -c "ls -l /run/php/php8.2-fpm.sock" || echo "No socket found"
 
     - name: Test connection
       run: |
