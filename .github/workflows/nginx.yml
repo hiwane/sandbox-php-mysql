@@ -1,22 +1,23 @@
 name: nginx
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
 
     services:
       mysql:
         image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: testdb
         ports:
           - 3306:3306
-        env:
-          MYSQL_ROOT_PASSWORD: rootpassword
-          MYSQL_DATABASE: testdb
-          MYSQL_USER: testuser
-          MYSQL_PASSWORD: testpassword
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
@@ -27,39 +28,32 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up PHP and Nginx
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build and run nginx container
       run: |
-        docker build -t custom-nginx-php ./nginx
-        docker run -d --name nginx -p 80:80 -v ${{ github.workspace }}:/usr/share/nginx/html custom-nginx-php
-        sleep 3
+        docker build -t my-nginx:latest -f nginx/Dockerfile nginx
+        docker run -d -p 80:80 \
+          --name my-nginx \
+          --link mysql:mysql \
+          -v ${{ github.workspace }}/v1:/var/www/html/v1 \
+          my-nginx:latest
 
     - name: List running containers
       run: docker ps -a
     - name: Check container status
-      run: docker inspect nginx
+      run: docker inspect my-nginx
     - name: Display nginx logs
-      run: docker logs nginx
-    - name: Display nginx Config
+      run: docker logs my-nginx
+    - name: Wait for MySQL to be healthy
       run: |
-        docker exec nginx ls /etc
-        docker exec nginx cat /etc/nginx/nginx.conf
-
-    - name: Wait for MySQL to be ready
-      run: |
-        until mysqladmin ping --host=127.0.0.1 --port=3306 --user=root --password=root --silent; do
-          echo "Waiting for database connection..."
-          sleep 1
+        until docker exec mysql mysqladmin ping --silent; do
+          sleep 5
         done
-        echo healthcheck ok
 
-    - name: echo env
+    - name: Test connection
       run: |
-        pwd
-        ls -la
-        ls -la v1
-        ls -la tests
-
-    - name: Check redirect
-      run: |
-        curl http://localhost/some/other/page
+        sleep 10 # Wait for nginx to fully start
+        curl -f http://localhost/hoge
 
