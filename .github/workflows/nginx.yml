@@ -79,7 +79,7 @@ jobs:
 
     - name: Check PHP-FPM socket
       run: |
-        docker exec my-nginx sudo find / -type s
+        docker exec my-nginx find / -type s
 
     - name: Test connection
       run: |
