@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     services:
       mysql:
@@ -30,7 +31,7 @@ jobs:
       run: |
         docker build -t custom-nginx-php ./nginx
         docker run -d --name nginx -p 80:80 -v ${{ github.workspace }}:/usr/share/nginx/html custom-nginx-php
-        sleep 5
+        sleep 3
 
     - name: List running containers
       run: docker ps -a
