@@ -56,10 +56,10 @@ jobs:
 
     - name: List running containers
       run: docker ps -a
-    - name: Check container status
-      run: docker inspect my-nginx
     - name: Display nginx logs
       run: docker logs my-nginx
+    - name: Check container status
+      run: docker inspect my-nginx
 
     - name: Test connection
       run: |

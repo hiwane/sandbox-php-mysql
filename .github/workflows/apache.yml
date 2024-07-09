@@ -67,10 +67,10 @@ jobs:
 
     - name: List running containers
       run: docker ps -a
-    - name: Check container status
-      run: docker inspect my-nginx
     - name: Display nginx logs
-      run: docker logs my-nginx
+      run: docker logs apache
+    - name: Check container status
+      run: docker inspect apache
 
     - name: Wait for Apache
       run: |
