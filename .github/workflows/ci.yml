@@ -54,5 +54,5 @@ jobs:
 
     - name: Curl index.php
       run: |
-        curl http://localhost/index.php
+        curl http://localhost/takotako
 
