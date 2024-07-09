@@ -2,9 +2,11 @@ name: nginx
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -25,24 +27,24 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-
-    - name: Build and run nginx container
+    - name: Build Docker image
       run: |
         docker build -t my-nginx:latest -f nginx/Dockerfile nginx
-        docker run -d -p 80:80 \
+
+    - name: Start Nginx
+      run: |
+        docker run -d \
           --name my-nginx \
-          --link php-fpm:php-fpm \
+          -p 80:80 \
           --network host \
-          --link mysql:mysql \
           -v ${{ github.workspace }}/v1:/var/www/html/v1 \
           my-nginx:latest
+          # --link mysql:mysql \
+          # --link php-fpm:php-fpm \
           # --link mysql:mysql \
 
     - name: echo env
@@ -51,18 +53,13 @@ jobs:
         ls -la
         ls -la v1
         ls -la tests
+
     - name: List running containers
       run: docker ps -a
     - name: Check container status
       run: docker inspect my-nginx
     - name: Display nginx logs
       run: docker logs my-nginx
-    - name: Wait for MySQL
-      run: |
-        until mysqladmin ping --host=127.0.0.1 --port=3306 --user=root --password=root --silent; do
-          echo "Waiting for database connection..."
-          sleep 1
-        done
 
     - name: Test connection
       run: |

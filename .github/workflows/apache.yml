@@ -41,7 +41,12 @@ jobs:
 
     - name: Start Apache
       run: |
-        docker run -d --name apache -p 80:80 --network host -v ${{ github.workspace }}:/var/www/html my-php-apache
+        docker run -d \
+          --name apache \
+          -p 80:80 \
+          --network host \
+          -v ${{ github.workspace }}:/var/www/html \
+          my-php-apache
 
     - name: Display Apache2 Config
       run: |
@@ -59,6 +64,13 @@ jobs:
         ls -la
         ls -la v1
         ls -la tests
+
+    - name: List running containers
+      run: docker ps -a
+    - name: Check container status
+      run: docker inspect my-nginx
+    - name: Display nginx logs
+      run: docker logs my-nginx
 
     - name: Wait for Apache
       run: |
