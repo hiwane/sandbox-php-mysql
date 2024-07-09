@@ -1,13 +1,15 @@
-FROM php:7.4-fpm
 
-# Install required extensions
-RUN docker-php-ext-install pdo pdo_mysql
+FROM nginx:latest
+
+# Install PHP and required extensions
+RUN apt-get update && \
+    apt-get install -y php-fpm php-mysql
 
 # Copy Nginx configuration
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/default.conf /etc/nginx/nginx.conf
 
-# Install Nginx
-RUN apt-get update && apt-get install -y nginx
+# Set up volumes
+VOLUME /usr/share/nginx/html
 
-# Start Nginx and PHP-FPM
+# Start PHP and Nginx
 CMD service php7.4-fpm start && nginx -g 'daemon off;'

@@ -1,12 +1,6 @@
-name: CI
+name: nginx
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: [push, pull_request]
 
 jobs:
   build:
@@ -15,11 +9,13 @@ jobs:
     services:
       mysql:
         image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_db
         ports:
           - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: rootpassword
+          MYSQL_DATABASE: testdb
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpassword
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
@@ -28,31 +24,30 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
-    - name: Build Docker image
+    - name: Set up PHP and Nginx
       run: |
-        docker build -t my-php-nginx ./nginx
+        docker build -t custom-nginx-php ./nginx
+        docker run -d --name web -p 80:80 -v ${{ github.workspace }}:/usr/share/nginx/html custom-nginx-php
 
-    - name: Start Nginx and PHP-FPM
+    - name: Wait for MySQL to be ready
       run: |
-        docker run -d --name nginx -p 80:80 --network host -v ${{ github.workspace }}:/var/www/html my-php-nginx
+        docker-compose exec mysql mysqladmin --wait=30 ping
 
-    - name: Wait for MySQL
+    - name: Test PHP and MySQL connection
       run: |
-        until mysqladmin ping --host=127.0.0.1 --port=3306 --user=root --password=root --silent; do
-          echo "Waiting for database connection..."
-          sleep 1
-        done
+        echo "<?php
+        try {
+            \$pdo = new PDO('mysql:host=localhost;dbname=testdb', 'testuser', 'testpassword');
+            echo 'Connection successful';
+        } catch (PDOException \$e) {
+            echo 'Connection failed: ' . \$e->getMessage();
+        }
+        ?>" > /usr/share/nginx/html/test.php
+        curl http://localhost/test.php
 
-    - name: Wait for Nginx
+    - name: Check redirect
       run: |
-        until curl -s http://localhost; do
-          echo "Waiting for Nginx server..."
-          sleep 5
-        done
-
-    - name: Curl index.php
-      run: |
-        curl http://localhost/
+        curl -I http://localhost/some/other/page
 
