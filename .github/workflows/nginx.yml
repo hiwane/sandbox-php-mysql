@@ -28,6 +28,8 @@ jobs:
           --health-retries=3
 
     steps:
+    - run: mkdir -p log && chmod 777 log
+    - run: mkdir -p v1/log && chmod 777 v1/log
     - name: Checkout code
       uses: actions/checkout@v4
 
@@ -53,6 +55,10 @@ jobs:
         ls -la
         ls -la v1
         ls -la tests
+        echo "@@@ log"
+        ls -la log
+        echo "@@@ v1/log"
+        ls -la v1/log
         echo "@@@ /etc"
         ls -la /etc/
         echo "@@@ /etc/php"
@@ -75,12 +81,12 @@ jobs:
     - name: Check container status
       run: docker inspect my-nginx
 
-    - name: Check nginx and PHP-FPM status
+    - name: Check serivice / nginx and PHP-FPM status
       run: |
         docker exec my-nginx service php8.2-fpm status
         docker exec my-nginx service nginx status
 
-    - name: Check nginx and PHP-FPM status
+    - name: Check ps / nginx and php-apm
       run: |
         docker exec my-nginx bash -c "ps aux | grep nginx"
         docker exec my-nginx bash -c "ps aux | grep php | grep fpm"
@@ -95,7 +101,6 @@ jobs:
         docker exec my-nginx bash -c "ls -l /var/log/nginx"
         docker exec my-nginx bash -c "tail /var/log/nginx/error.log"
         # docker exec my-nginx bash -c 'find / -name "php.*-fpm/*"'
-
 
     - name: Test connection
       run: |
