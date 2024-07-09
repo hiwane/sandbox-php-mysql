@@ -12,6 +12,6 @@ COPY default.conf /etc/nginx/nginx.conf
 VOLUME /usr/share/nginx/html
 
 # Start PHP and Nginx
+CMD ["nginx", "-g", "daemon off;"]
 CMD systemctl list-unit-files -t service
-CMD nginx -g 'daemon off;'
 # CMD systemctl status php-fpm.service
