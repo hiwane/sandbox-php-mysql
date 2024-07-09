@@ -77,6 +77,8 @@ jobs:
         docker exec my-nginx ls -la /etc/php || echo "no /etc/php"
         docker exec my-nginx ls -la /etc/php/8.2 || echo "no /etc/php/8.2"
         docker exec my-nginx ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
+        docker exec my-nginx ls -la /var/www/html || echo "no /var/www/html"
+        docker exec my-nginx ls -la /var/www/html/v1 || echo "no /var/www/html/v1"
 
     - name: List running containers
       run: docker ps -a
