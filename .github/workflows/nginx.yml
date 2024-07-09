@@ -28,10 +28,11 @@ jobs:
           --health-retries=3
 
     steps:
-    - run: mkdir -p log && chmod 777 log && ls -la
-    - run: mkdir -p v1/log && chmod 777 v1/log && ls -la v1
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - run: mkdir -p log && chmod 777 log && ls -la
+    - run: mkdir -p v1/log && chmod 777 v1/log && ls -la v1
 
     - name: Build Docker image
       run: |
