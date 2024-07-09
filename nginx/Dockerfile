@@ -5,6 +5,7 @@ RUN apt-get update -y && \
 
 # Copy Nginx configuration
 COPY default.conf /etc/nginx/nginx.conf
+COPY php-fpm.conf /etc/php/8.2/fpm/pool.d/ci.conf
 
 # Set up volumes
 # VOLUME /usr/share/nginx/html
