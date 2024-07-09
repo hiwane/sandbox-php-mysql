@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get install -y php-fpm php-mysql
 
 # Copy Nginx configuration
-COPY ./nginx/default.conf /etc/nginx/nginx.conf
+COPY default.conf /etc/nginx/nginx.conf
 
 # Set up volumes
 VOLUME /usr/share/nginx/html
