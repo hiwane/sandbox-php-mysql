@@ -73,11 +73,19 @@ jobs:
         ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
     - name: echo docker env
       run: |
+        echo "@@@ /etc"
         docker exec my-nginx ls -la /etc | grep php || echo "no /etc"
+        echo "@@@ /etc/php"
         docker exec my-nginx ls -la /etc/php || echo "no /etc/php"
+        echo "@@@ /etc/php/8.2"
         docker exec my-nginx ls -la /etc/php/8.2 || echo "no /etc/php/8.2"
+        echo "@@@ /etc/php/8.2/fpm"
+        docker exec my-nginx ls -la /etc/php/8.2/fpm || echo "no /etc/php/8.2/fpm"
+        echo "@@@ /etc/php-fpm.d"
         docker exec my-nginx ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
+        echo "@@@ /var/www/html"
         docker exec my-nginx ls -la /var/www/html || echo "no /var/www/html"
+        echo "@@@ /var/www/html/v1"
         docker exec my-nginx ls -la /var/www/html/v1 || echo "no /var/www/html/v1"
 
     - name: List running containers
@@ -105,7 +113,7 @@ jobs:
     - name: tail error.log
       run: |
         docker exec my-nginx bash -c "ls -l /var/log/nginx"
-        docker exec my-nginx bash -c "tail /var/log/nginx/error.log"
+        cat v1/log/error.log || echo "No error.log found"
         # docker exec my-nginx bash -c 'find / -name "php.*-fpm/*"'
 
     - name: Test connection
