@@ -38,6 +38,10 @@ jobs:
       run: |
         docker run -d --name apache -p 80:80 --network host -v ${{ github.workspace }}:/var/www/html my-php-apache
 
+    - name: Display Apache2 Config
+      run: |
+        docker exec apache cat /etc/apache2/apache2.conf
+
     - name: Wait for MySQL
       run: |
         until mysqladmin ping --host=127.0.0.1 --port=3306 --user=root --password=root --silent; do
