@@ -40,6 +40,8 @@ jobs:
           --name my-nginx \
           --link mysql:mysql \
           --link php-fpm:php-fpm \
+          --network host \
+          --link mysql:mysql \
           -v ${{ github.workspace }}/v1:/var/www/html/v1 \
           my-nginx:latest
 
