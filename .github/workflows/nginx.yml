@@ -31,6 +31,10 @@ jobs:
         docker build -t custom-nginx-php ./nginx
         docker run -d --name web -p 80:80 -v ${{ github.workspace }}:/usr/share/nginx/html custom-nginx-php
 
+    - name: Display nginx Config
+      run: |
+        docker exec web cat /etc/nginx/nginx.conf
+
     - name: Wait for MySQL to be ready
       run: |
         until mysqladmin ping --host=127.0.0.1 --port=3306 --user=root --password=root --silent; do
@@ -39,7 +43,14 @@ jobs:
         done
         echo healthcheck ok
 
+    - name: echo env
+      run: |
+        pwd
+        ls -la
+        ls -la v1
+        ls -la tests
+
     - name: Check redirect
       run: |
-        curl -I http://localhost/some/other/page
+        curl http://localhost/some/other/page
 
