@@ -3,7 +3,7 @@ FROM nginx:latest
 
 # Install PHP and required extensions
 RUN apt-get update && \
-    apt-get install -y php-fpm php-mysql
+    apt-get install -y php7.4-fpm php-mysql
 
 # Copy Nginx configuration
 COPY default.conf /etc/nginx/nginx.conf
