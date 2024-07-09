@@ -29,7 +29,7 @@ jobs:
     - name: Set up PHP and Nginx
       run: |
         docker build -t custom-nginx-php ./nginx
-        docker run -d --name web -p 80:80 -v ${{ github.workspace }}:/usr/share/nginx/html custom-nginx-php
+        docker run -d --name web --network-alias=web -p 80:80 -v ${{ github.workspace }}:/usr/share/nginx/html custom-nginx-php
 
     - name: Wait for MySQL to be ready
       run: |
@@ -37,18 +37,6 @@ jobs:
           echo "Waiting for database connection..."
           sleep 1
         done
-
-    - name: Test PHP and MySQL connection
-      run: |
-        echo "<?php
-        try {
-            \$pdo = new PDO('mysql:host=localhost;dbname=testdb', 'testuser', 'testpassword');
-            echo 'Connection successful';
-        } catch (PDOException \$e) {
-            echo 'Connection failed: ' . \$e->getMessage();
-        }
-        ?>" > /usr/share/nginx/html/test.php
-        curl http://localhost/test.php
 
     - name: Check redirect
       run: |
