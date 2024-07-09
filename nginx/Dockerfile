@@ -11,7 +11,7 @@ COPY default.conf /etc/nginx/nginx.conf
 
 #EXPOSE 80
 
-CMD (service --status-all) && (find /var -name "php*-fpm*" || echo "fpm not found") && nginx -g 'daemon off;'
+CMD (service --status-all) && (service php8.2-fpm start && service status-all) && nginx -g 'daemon off;'
 
 
 
