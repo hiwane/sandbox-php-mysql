@@ -12,4 +12,4 @@ COPY default.conf /etc/nginx/nginx.conf
 VOLUME /usr/share/nginx/html
 
 # Start PHP and Nginx
-CMD service php-fpm start && nginx -g 'daemon off;'
+CMD service nginx -g 'daemon off;'
