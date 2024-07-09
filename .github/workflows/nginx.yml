@@ -65,7 +65,7 @@ jobs:
       run: |
         docker exec my-nginx ls -la /etc || echo "no /etc"
         docker exec my-nginx ls -la /etc/php || echo "no /etc/php"
-        docker exec my-nginx ls -la /etc/php/8.1 || echo "no /etc/php/8.1"
+        docker exec my-nginx ls -la /etc/php/8.2 || echo "no /etc/php/8.2"
         docker exec my-nginx ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
 
     - name: List running containers
@@ -85,16 +85,17 @@ jobs:
         docker exec my-nginx bash -c "ps aux | grep nginx"
         docker exec my-nginx bash -c "ps aux | grep php | grep fpm"
 
-    - name: tail error.log
-      run: |
-        docker exec my-nginx bash -c "ls -l /var/log/nginx"
-        docker exec my-nginx bash -c "tail -n 50 /var/log/nginx/error.log"
-        # docker exec my-nginx bash -c 'find / -name "php.*-fpm/*"'
-
     - name: Check PHP-FPM socket
       run: |
         # docker exec my-nginx find / -type s
         docker exec my-nginx bash -c "ls -l /run/php/php8.2-fpm.sock" || echo "No socket found"
+
+    - name: tail error.log
+      run: |
+        docker exec my-nginx bash -c "ls -l /var/log/nginx"
+        docker exec my-nginx bash -c "tail /var/log/nginx/error.log"
+        # docker exec my-nginx bash -c 'find / -name "php.*-fpm/*"'
+
 
     - name: Test connection
       run: |
