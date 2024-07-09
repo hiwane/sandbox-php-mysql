@@ -11,7 +11,10 @@ COPY default.conf /etc/nginx/nginx.conf
 
 #EXPOSE 80
 
-CMD (service --status-all) && (service php8.2-fpm start) && nginx -g 'daemon off;'
+CMD (service --status-all) && \
+	echo "=================" && \
+	(service php8.2-fpm start) && \
+	nginx -g 'daemon off;'
 
 
 

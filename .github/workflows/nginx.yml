@@ -61,6 +61,15 @@ jobs:
     - name: Check container status
       run: docker inspect my-nginx
 
+    - name: Check nginx and PHP-FPM status
+      run: |
+        docker exec my-nginx bash -c "ps aux | grep nginx"
+        docker exec my-nginx bash -c "ps aux | grep php-fpm"
+
+    - name: Check nginx configuration
+      run: |
+        docker exec my-nginx cat /etc/nginx/nginx.conf
+
     - name: Test connection
       run: |
         sleep 5 # Wait for nginx to fully start
