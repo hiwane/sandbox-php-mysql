@@ -29,11 +29,16 @@ jobs:
     - name: Set up PHP and Nginx
       run: |
         docker build -t custom-nginx-php ./nginx
-        docker run -d --name web -p 80:80 -v ${{ github.workspace }}:/usr/share/nginx/html custom-nginx-php
+        docker run -d --name nginx -p 80:80 -v ${{ github.workspace }}:/usr/share/nginx/html custom-nginx-php
 
+    - name: List running containers
+      run: docker ps -a
+    - name: Display nginx logs
+      run: docker logs nginx
     - name: Display nginx Config
       run: |
-        docker exec web cat /etc/nginx/nginx.conf
+        docker exec nginx ls /etc
+        docker exec nginx cat /etc/nginx/nginx.conf
 
     - name: Wait for MySQL to be ready
       run: |
