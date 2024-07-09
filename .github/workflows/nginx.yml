@@ -84,6 +84,9 @@ jobs:
         docker exec my-nginx ls -la /var/www/html || echo "no /var/www/html"
         echo "@@@ /var/www/html/v1"
         docker exec my-nginx ls -la /var/www/html/v1 || echo "no /var/www/html/v1"
+
+        echo "@@@ /var/log/php8.2-fpm.log"
+        docker exec my-nginx cat /var/log/php8.2-fpm.log
     - name: cat php-fpm.conf
       run: |
         docker exec my-nginx cat /etc/php/8.2/fpm/php-fpm.conf
