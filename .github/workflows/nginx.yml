@@ -28,8 +28,8 @@ jobs:
           --health-retries=3
 
     steps:
-    - run: mkdir -p log && chmod 777 log
-    - run: mkdir -p v1/log && chmod 777 v1/log
+    - run: mkdir -p log && chmod 777 log && ls -la
+    - run: mkdir -p v1/log && chmod 777 v1/log && ls -la v1
     - name: Checkout code
       uses: actions/checkout@v4
 
@@ -52,13 +52,16 @@ jobs:
     - name: echo env
       run: |
         pwd
+        echo "@@@ ."
         ls -la
+        echo "@@@ v1"
         ls -la v1
+        echo "@@@ tests"
         ls -la tests
         echo "@@@ log"
-        ls -la log
+        ls -la log || echo "no log"
         echo "@@@ v1/log"
-        ls -la v1/log
+        ls -la v1/log || echo "no v1/log"
         echo "@@@ /etc"
         ls -la /etc/
         echo "@@@ /etc/php"
