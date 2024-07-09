@@ -30,17 +30,22 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
 
     - name: Build and run nginx container
       run: |
         docker build -t my-nginx:latest -f nginx/Dockerfile nginx
         docker run -d -p 80:80 \
           --name my-nginx \
-          --link mysql:mysql \
           -v ${{ github.workspace }}/v1:/var/www/html/v1 \
           my-nginx:latest
 
+    - name: echo env
+      run: |
+        pwd
+        ls -la
+        ls -la v1
+        ls -la tests
     - name: List running containers
       run: docker ps -a
     - name: Check container status
@@ -55,6 +60,6 @@ jobs:
 
     - name: Test connection
       run: |
-        sleep 10 # Wait for nginx to fully start
+        sleep 5 # Wait for nginx to fully start
         curl -f http://localhost/hoge
 
