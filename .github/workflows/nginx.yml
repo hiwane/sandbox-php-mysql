@@ -84,12 +84,17 @@ jobs:
         docker exec my-nginx ls -la /etc/php/8.2 || echo "no /etc/php/8.2"
         echo "@@@ /etc/php/8.2/fpm"
         docker exec my-nginx ls -la /etc/php/8.2/fpm || echo "no /etc/php/8.2/fpm"
+        echo "@@@ /etc/php/8.2/fpm/conf.d"
+        docker exec my-nginx ls -la /etc/php/8.2/fpm/conf.d || echo "no /etc/php/8.2/fpm/conf.d"
         echo "@@@ /etc/php-fpm.d"
         docker exec my-nginx ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
         echo "@@@ /var/www/html"
         docker exec my-nginx ls -la /var/www/html || echo "no /var/www/html"
         echo "@@@ /var/www/html/v1"
         docker exec my-nginx ls -la /var/www/html/v1 || echo "no /var/www/html/v1"
+    - name: cat php-fpm.conf
+      run: |
+        docker exec my-nginx cat /etc/php/8.2/fpm/php-fpm.conf
 
     - name: List running containers
       run: docker ps -a
