@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: |
+        docker build -t my-php-nginx ./nginx
+
+    - name: Start Nginx and PHP-FPM
+      run: |
+        docker run -d --name nginx -p 80:80 --network host -v ${{ github.workspace }}:/var/www/html my-php-nginx
+
+    - name: Wait for MySQL
+      run: |
+        until mysqladmin ping --host=127.0.0.1 --port=3306 --user=root --password=root --silent; do
+          echo "Waiting for database connection..."
+          sleep 1
+        done
+
+    - name: Wait for Nginx
+      run: |
+        until curl -s http://localhost; do
+          echo "Waiting for Nginx server..."
+          sleep 5
+        done
+
+    - name: Curl index.php
+      run: |
+        curl http://localhost/
+
