@@ -44,6 +44,12 @@ jobs:
           echo "Waiting for database connection..."
           sleep 1
         done
+    - name: echo env
+      run: |
+        pwd
+        ls -l
+        ls -l v1
+        ls -l tests
 
     - name: Wait for Apache
       run: |
