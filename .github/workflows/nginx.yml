@@ -57,7 +57,7 @@ jobs:
     - name: List running containers
       run: docker ps -a
     - name: Display nginx logs
-      run: docker logs my-nginx
+      run: docker logs --details my-nginx
     - name: Check container status
       run: docker inspect my-nginx
 
