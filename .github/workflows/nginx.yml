@@ -52,10 +52,11 @@ jobs:
       run: docker inspect my-nginx
     - name: Display nginx logs
       run: docker logs my-nginx
-    - name: Wait for MySQL to be healthy
+    - name: Wait for MySQL
       run: |
-        until docker exec mysql mysqladmin ping --silent; do
-          sleep 5
+        until mysqladmin ping --host=127.0.0.1 --port=3306 --user=root --password=root --silent; do
+          echo "Waiting for database connection..."
+          sleep 1
         done
 
     - name: Test connection
