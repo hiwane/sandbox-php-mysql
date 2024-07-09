@@ -65,7 +65,7 @@ jobs:
       run: |
         docker exec my-nginx bash -c "ps aux | grep nginx"
         docker exec my-nginx bash -c "ps aux | grep php | grep fpm"
-        docker exec my-nginx bash -c 'find / -name "php.*-fpm/*'
+        docker exec my-nginx bash -c 'find / -name "php.*-fpm/*"'
 
     - name: Check nginx configuration
       run: |
