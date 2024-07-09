@@ -38,12 +38,12 @@ jobs:
         docker build -t my-nginx:latest -f nginx/Dockerfile nginx
         docker run -d -p 80:80 \
           --name my-nginx \
-          --link mysql:mysql \
           --link php-fpm:php-fpm \
           --network host \
           --link mysql:mysql \
           -v ${{ github.workspace }}/v1:/var/www/html/v1 \
           my-nginx:latest
+          # --link mysql:mysql \
 
     - name: echo env
       run: |
