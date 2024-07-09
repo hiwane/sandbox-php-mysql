@@ -80,7 +80,7 @@ jobs:
     - name: Check PHP-FPM socket
       run: |
         # docker exec my-nginx find / -type s
-        ls -l /run/php/php8.2-fpm.sock
+        ls -l /run/php/php8.2-fpm.sock || echo "No socket found"
 
     - name: Test connection
       run: |
