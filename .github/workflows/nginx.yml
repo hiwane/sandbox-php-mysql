@@ -55,6 +55,8 @@ jobs:
         ls -la tests
         echo "@@@ /etc"
         ls -la /etc/
+        echo "@@@ /etc/php"
+        ls -la /etc/php
         echo "@@@ /etc/php-fpm"
         ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
 
@@ -78,7 +80,7 @@ jobs:
     - name: tail error.log
       run: |
         docker exec my-nginx bash -c "ls -l /var/log/nginx"
-        docker exec my-nginx bash -c "tail -f /var/log/nginx/error.log"
+        docker exec my-nginx bash -c "tail -n 50 /var/log/nginx/error.log"
         # docker exec my-nginx bash -c 'find / -name "php.*-fpm/*"'
 
     - name: Check PHP-FPM socket
@@ -89,5 +91,5 @@ jobs:
     - name: Test connection
       run: |
         sleep 5 # Wait for nginx to fully start
-        curl -f http://localhost/hoge || docker exec my-nginx bash -c "tail -f /var/log/nginx/error.log"
+        curl -f http://localhost/hoge || docker exec my-nginx bash -c "tail /var/log/nginx/error.log"
 
