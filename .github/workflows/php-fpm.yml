@@ -1,0 +1,36 @@
+name: php-fpm
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    services:
+
+      php-fpm:
+        image: php:8.2-fpm
+        ports:
+          - 9000:9000
+        options: >-
+          --health-cmd="curl --fail http://localhost:9000 || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: echo env
+      run: |
+        pwd
+        ls -la
+        ls -la v1
+        ls -la tests
+
