@@ -73,7 +73,7 @@ jobs:
         ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
     - name: echo docker env
       run: |
-        docker exec my-nginx ls -la /etc || echo "no /etc"
+        docker exec my-nginx ls -la /etc | grep php || echo "no /etc"
         docker exec my-nginx ls -la /etc/php || echo "no /etc/php"
         docker exec my-nginx ls -la /etc/php/8.2 || echo "no /etc/php/8.2"
         docker exec my-nginx ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
