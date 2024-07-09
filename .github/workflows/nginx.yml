@@ -31,8 +31,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - run: mkdir -p log && chmod 777 log && ls -la
-    - run: mkdir -p v1/log && chmod 777 v1/log && ls -la v1
+    - name: nginx/log directory
+      run: |
+        mkdir -p v1/log && chmod 777 v1/log && ls -la v1
+        touch v1/log/error.log && chmod 666 v1/log/error.log
+        touch v1/log/access.log && chmod 666 v1/log/access.log
 
     - name: Build Docker image
       run: |
