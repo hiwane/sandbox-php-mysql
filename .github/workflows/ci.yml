@@ -68,5 +68,6 @@ jobs:
 
     - name: Curl index.php
       run: |
-        curl http://localhost/takotako
+        curl http://localhost/v1
+        curl http://localhost/v1/hoge
 
