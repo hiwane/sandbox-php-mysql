@@ -66,16 +66,11 @@ jobs:
         docker exec my-nginx service php8.2-fpm status
         docker exec my-nginx service nginx status
 
-
     - name: Check nginx and PHP-FPM status
       run: |
         docker exec my-nginx bash -c "ps aux | grep nginx"
         docker exec my-nginx bash -c "ps aux | grep php | grep fpm"
         # docker exec my-nginx bash -c 'find / -name "php.*-fpm/*"'
-
-    - name: Check nginx configuration
-      run: |
-        docker exec my-nginx cat /etc/nginx/nginx.conf
 
     - name: Check PHP-FPM socket
       run: |
@@ -85,5 +80,5 @@ jobs:
     - name: Test connection
       run: |
         sleep 5 # Wait for nginx to fully start
-        curl -f http://localhost/hoge
+        curl -f http://localhost/hoge || docker exec my-nginx bash -c "tail -f /var/log/nginx/error.log"
 
