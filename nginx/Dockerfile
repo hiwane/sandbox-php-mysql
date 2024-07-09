@@ -13,7 +13,7 @@ VOLUME /usr/share/nginx/html
 
 # Start PHP and Nginx
 CMD service status --status-all
-#CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
 #CMD systemctl list-unit-files -t service
 
 # CMD systemctl status php-fpm.service
