@@ -113,11 +113,16 @@ jobs:
     - name: tail error.log
       run: |
         docker exec my-nginx bash -c "ls -l /var/log/nginx"
+        echo "@@ ls v1/log"
+        ls -l v1/log
+        echo "@@ cat /log/error.log"
         cat v1/log/error.log || echo "No error.log found"
+        echo "@@ cat /log/access.log"
+        cat v1/log/access.log || echo "No access.log found"
         # docker exec my-nginx bash -c 'find / -name "php.*-fpm/*"'
 
     - name: Test connection
       run: |
         sleep 5 # Wait for nginx to fully start
-        curl -f http://localhost/hoge || docker exec my-nginx bash -c "tail /var/log/nginx/error.log"
+        curl -f http://localhost/hoge
 
