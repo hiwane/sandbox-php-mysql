@@ -25,6 +25,16 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
+      php-fpm:
+        image: php:8.2-fpm
+        ports:
+          - 9000:9000
+        options: >-
+          --health-cmd="curl --fail http://localhost:9000 || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -37,6 +47,8 @@ jobs:
         docker build -t my-nginx:latest -f nginx/Dockerfile nginx
         docker run -d -p 80:80 \
           --name my-nginx \
+          --link mysql:mysql \
+          --link php-fpm:php-fpm \
           -v ${{ github.workspace }}/v1:/var/www/html/v1 \
           my-nginx:latest
 
