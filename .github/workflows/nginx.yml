@@ -29,7 +29,7 @@ jobs:
     - name: Set up PHP and Nginx
       run: |
         docker build -t custom-nginx-php ./nginx
-        docker run -d --name web --network-alias=web -p 80:80 -v ${{ github.workspace }}:/usr/share/nginx/html custom-nginx-php
+        docker run -d --name web -p 80:80 -v ${{ github.workspace }}:/usr/share/nginx/html custom-nginx-php
 
     - name: Wait for MySQL to be ready
       run: |
@@ -37,6 +37,7 @@ jobs:
           echo "Waiting for database connection..."
           sleep 1
         done
+        echo healthcheck ok
 
     - name: Check redirect
       run: |
