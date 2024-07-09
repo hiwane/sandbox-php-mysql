@@ -30,6 +30,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: .htaccess
+      run: |
+        echo "RewriteEngine On" > .htaccess
+        echo "RewriteRule ^ index.php [L]" >> .htaccess
     - name: Build Docker image
       run: |
         docker build -t my-php-apache ./tests
@@ -51,9 +55,9 @@ jobs:
     - name: echo env
       run: |
         pwd
-        ls -l
-        ls -l v1
-        ls -l tests
+        ls -la
+        ls -la v1
+        ls -la tests
 
     - name: Wait for Apache
       run: |
