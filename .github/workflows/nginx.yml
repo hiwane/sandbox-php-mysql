@@ -30,9 +30,12 @@ jobs:
       run: |
         docker build -t custom-nginx-php ./nginx
         docker run -d --name nginx -p 80:80 -v ${{ github.workspace }}:/usr/share/nginx/html custom-nginx-php
+        sleep 5
 
     - name: List running containers
       run: docker ps -a
+    - name: Check container status
+      run: docker inspect nginx
     - name: Display nginx logs
       run: docker logs nginx
     - name: Display nginx Config
