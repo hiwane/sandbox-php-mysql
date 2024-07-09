@@ -33,8 +33,8 @@ jobs:
 
     - name: nginx/log directory
       run: |
-        mkdir -p v1/log && chmod 777 v1/log && ls -la v1
-        touch v1/log/error.log && chmod 666 v1/log/error.log
+        mkdir -p v1/log         && chmod 777 v1/log           && ls -la v1
+        touch v1/log/error.log  && chmod 666 v1/log/error.log
         touch v1/log/access.log && chmod 666 v1/log/access.log
 
     - name: Build Docker image
@@ -66,14 +66,6 @@ jobs:
         ls -la log || echo "no log"
         echo "@@@ v1/log"
         ls -la v1/log || echo "no v1/log"
-        echo "@@@ /etc"
-        ls -la /etc/
-        echo "@@@ /etc/php"
-        ls -la /etc/php
-        echo "@@@ /etc/php/8.1"
-        ls -la /etc/php/8.1
-        echo "@@@ /etc/php-fpm"
-        ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
     - name: echo docker env
       run: |
         echo "@@@ /etc"
@@ -86,8 +78,8 @@ jobs:
         docker exec my-nginx ls -la /etc/php/8.2/fpm || echo "no /etc/php/8.2/fpm"
         echo "@@@ /etc/php/8.2/fpm/conf.d"
         docker exec my-nginx ls -la /etc/php/8.2/fpm/conf.d || echo "no /etc/php/8.2/fpm/conf.d"
-        echo "@@@ /etc/php-fpm.d"
-        docker exec my-nginx ls -la /etc/php-fpm.d/ || echo "no /etc/php-fpm.d/"
+        echo "@@@ /etc/php/8.2/fpm/pool.d"
+        docker exec my-nginx ls -la /etc/php/8.2/fpm/pool.d || echo "no /etc/php/8.2/fpm/pool.d"
         echo "@@@ /var/www/html"
         docker exec my-nginx ls -la /var/www/html || echo "no /var/www/html"
         echo "@@@ /var/www/html/v1"
@@ -101,7 +93,12 @@ jobs:
     - name: Display nginx logs
       run: docker logs --details my-nginx
     - name: Check container status
-      run: docker inspect my-nginx
+      run: docker inspect my-nginx | grep -n Status
+
+    - name: Check PHP-FPM socket
+      run: |
+        # docker exec my-nginx find / -type s
+        docker exec my-nginx bash -c "ls -l /run/php/php8.2-fpm.sock" || echo "No socket found"
 
     - name: Check serivice / nginx and PHP-FPM status
       run: |
@@ -112,11 +109,6 @@ jobs:
       run: |
         docker exec my-nginx bash -c "ps aux | grep nginx"
         docker exec my-nginx bash -c "ps aux | grep php | grep fpm"
-
-    - name: Check PHP-FPM socket
-      run: |
-        # docker exec my-nginx find / -type s
-        docker exec my-nginx bash -c "ls -l /run/php/php8.2-fpm.sock" || echo "No socket found"
 
     - name: tail error.log
       run: |
