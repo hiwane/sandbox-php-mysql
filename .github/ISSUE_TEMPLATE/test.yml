@@ -50,7 +50,7 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: pos
+    id: frequency
     attributes:
       label: 発生頻度
       description: バグの発生頻度を選択してください
