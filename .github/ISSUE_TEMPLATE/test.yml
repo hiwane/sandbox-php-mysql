@@ -1,47 +1,86 @@
 name: Bug Report
 description: File a bug report.
 title: "[Bug]: "
-labels: ["bug", "triage"]
-projects: ["octo-org/1", "octo-org/44"]
+labels: ["0-bug"]
+projects:
 assignees:
-  - octocat
+  - hiwane
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
-  - type: input
-    id: contact
+        ## バグの内容、再現手順
+  - type: dropdown
+    id: pos
     attributes:
-      label: Contact Details
-      description: How can we get in touch with you if we need more info?
-      placeholder: ex. email@example.com
+      label: 発生個所
+      description: バグの発生個所を選択してください
+      options:
+        - AAA
+        - BBB
+        - CCC
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: バグの説明
+      description: バグの内容を詳しく説明してください。
+      placeholder: 具体的にお願いします
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 再現手順
+      description: バグを再現するための手順を記述してください。
+      placeholder: |
+        1. '...' に移動
+        2. '....' をクリック
+        3. '....' までスクロール
+        4. エラーが発生  
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待する動作
+      description: 本来期待される動作を記述してください
+    validations:
+      required: true
+  - type: dropdown
+    id: pos
+    attributes:
+      label: 発生頻度
+      description: バグの発生頻度を選択してください
+      options:
+        - 毎日
+        - 週に数回
+        - 月に数回
+        - 年に数回
+        - ごく稀に
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 効果
+      description: 作業優先度確定のため、修正により期待される効果を入力してください。
     validations:
       required: false
   - type: textarea
-    id: what-happened
+    id: other
     attributes:
-      label: What happened?
-      description: Also tell us, what did you expect to happen?
-      placeholder: Tell us what you see!
-      value: "A bug happened!"
+      label: 補足
+      description: 他に伝えたい事項があれば記載してください。
     validations:
-      required: true
+      required: false
+
+
   - type: dropdown
-    id: version
+    id: times
     attributes:
-      label: Version
-      description: What version of our software are you running?
-      options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
-      default: 0
-    validations:
-      required: true
-  - type: dropdown
-    id: browsers
-    attributes:
-      label: What browsers are you seeing the problem on?
+      label: 発生頻度
       multiple: true
       options:
         - Firefox
