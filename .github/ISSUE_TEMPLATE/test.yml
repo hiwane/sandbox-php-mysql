@@ -62,7 +62,7 @@ body:
     validations:
       required: true
   - type: textarea
-    id: expected
+    id: effect
     attributes:
       label: 効果
       description: 作業優先度確定のため、修正により期待される効果を入力してください。
